@@ -7,7 +7,10 @@ public class ConsoleProgress implements Runnable {
         char[] process = {'\\', '|', '/'};
         int index = 0;
         while (!Thread.currentThread().isInterrupted()) {
-            System.out.print("\r load: " + process[index % process.length]);
+            if (index == process.length) {
+                index = 0;
+            }
+            System.out.print("\r load: " + process[index]);
             index++;
             try {
                 Thread.sleep(500);
