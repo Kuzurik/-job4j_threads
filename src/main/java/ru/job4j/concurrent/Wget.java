@@ -4,12 +4,15 @@ import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
 
 public class Wget implements Runnable {
 
     private final String url;
     private final int speed;
     private final String outFileName;
+    private static final long SECOND = 1000;
+    private static final int BUFFER = 1024;
 
     public Wget(String url, int speed, String outFileName) {
         this.url = url;
@@ -21,12 +24,25 @@ public class Wget implements Runnable {
     public void run() {
         try (BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
              FileOutputStream fileOutputStream = new FileOutputStream(outFileName)) {
-            byte[] dataBuffer = new byte[speed];
+            byte[] dataBuffer = new byte[BUFFER];
             int bytesRead;
-            while ((bytesRead = in.read(dataBuffer, 0, speed)) != -1) {
+            long bytesWrited = 0;
+            Timestamp timeStart = new Timestamp(System.currentTimeMillis());
+            Timestamp timeGapStart = new Timestamp(System.currentTimeMillis());
+            while ((bytesRead = in.read(dataBuffer, 0, BUFFER)) != -1) {
+                bytesWrited += bytesRead;
+                if (bytesWrited >= speed) {
+                    bytesWrited = 0;
+                    long downloadSpeed = new Timestamp(System.currentTimeMillis()).getTime() - timeGapStart.getTime();
+                    if (downloadSpeed < SECOND) {
+                        Thread.sleep(SECOND - downloadSpeed);
+                    }
+                    timeGapStart = new Timestamp(System.currentTimeMillis());
+                }
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
-                Thread.sleep(1000);
             }
+            System.out.println("Время закачки файла:"
+                    + (new Timestamp(System.currentTimeMillis()).getTime() - timeStart.getTime()) / SECOND + " сек");
         } catch (IOException | InterruptedException e) {
             Thread.currentThread().interrupt();
         }
