@@ -43,12 +43,17 @@ public class Wget implements Runnable {
             }
             System.out.println("Время закачки файла:"
                     + (new Timestamp(System.currentTimeMillis()).getTime() - timeStart.getTime()) / SECOND + " сек");
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
+        if (args.length != 3) {
+            throw new IllegalArgumentException("add args: " + "url " + "speed in bytes" + "file name");
+        }
         String url = args[0];
         int speed = Integer.parseInt(args[1]);
         String outFileName = args[2];
