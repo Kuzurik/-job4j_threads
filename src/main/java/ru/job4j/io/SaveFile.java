@@ -1,8 +1,8 @@
 package ru.job4j.io;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 final public class SaveFile {
     private final File file;
@@ -12,8 +12,7 @@ final public class SaveFile {
     }
 
     public void saveContent(String content) {
-        StringBuilder out = new StringBuilder();
-        try (OutputStream o = new FileOutputStream(file)) {
+        try (BufferedOutputStream o = new BufferedOutputStream(new FileOutputStream(file))) {
             for (int i = 0; i < content.length(); i += 1) {
                 o.write(content.charAt(i));
             }

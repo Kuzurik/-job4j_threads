@@ -1,9 +1,9 @@
 package ru.job4j.io;
 
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.function.Predicate;
 
 final public class ParseFile implements Parse {
@@ -17,7 +17,7 @@ final public class ParseFile implements Parse {
     @Override
     public String content(Predicate<Character> filter) {
         StringBuilder out = new StringBuilder();
-        try (InputStream in = new FileInputStream(file)) {
+        try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
             int data;
             while ((data = in.read()) != -1) {
                 if (filter.test((char) data)) {
