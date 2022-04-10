@@ -16,32 +16,28 @@ public class UserStorage {
         this.users = new HashMap<>();
     }
 
-    public synchronized boolean add(User user) {
-        if (user != null) {
-            users.put(user.getId(), user);
-            return true;
-        }
-        return false;
+    public synchronized void add(User user) {
+        users.putIfAbsent(user.getId(), user);
     }
 
-    public synchronized boolean delete(int id) {
-        if (users.containsKey(id)) {
-            users.remove(id);
-            return true;
-        }
-        return false;
+    public synchronized boolean delete(User user) {
+       return users.remove(user.getId(), user);
     }
 
-    public synchronized boolean update(User user, int id) {
-        if (users.containsKey(id)) {
-            users.replace(id, user);
-            return true;
-        }
-        return false;
+    public synchronized void update(User user) {
+        users.replace(user.getId(), user);
     }
 
-    public synchronized void transfer(int fromId, int toId, int amount) {
-        users.get(fromId).minusAmount(amount);
-        users.get(toId).plusAmount(amount);
+    public synchronized boolean transfer(int fromId, int toId, int amount) {
+        User from = users.get(fromId);
+        User dest = users.get(toId);
+        if (from != null && dest != null && from.getAmount() >= amount) {
+                dest.setAmount((from.getAmount() - amount) + dest.getAmount());
+                from.setAmount(from.getAmount() - amount);
+                update(from);
+                update(dest);
+                return true;
+        }
+        return false;
     }
 }
