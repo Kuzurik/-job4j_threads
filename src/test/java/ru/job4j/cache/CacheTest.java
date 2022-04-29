@@ -33,12 +33,12 @@ public class CacheTest {
         assertThat(cache.getById(1).getVersion(), is(2));
     }
 
-    @Test
+    @Test (expected = OptimisticException.class)
     public void whenUpdateExpectingException() {
         Cache cache = new Cache();
         Base base = new Base(1, 1);
+        Base base1 = new Base(1, 2);
         cache.add(base);
-        base.setVersion(2);
-        cache.update(base);
+        cache.update(base1);
     }
 }
