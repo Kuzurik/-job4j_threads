@@ -22,8 +22,11 @@ public class Base {
         return name;
     }
 
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
     public void setName(String name) {
-        version++;
         this.name = name;
     }
 }

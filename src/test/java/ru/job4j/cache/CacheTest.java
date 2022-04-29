@@ -29,8 +29,16 @@ public class CacheTest {
         Cache cache = new Cache();
         Base base = new Base(1, 1);
         cache.add(base);
-        base.setName("newName");
         assertTrue(cache.update(base));
         assertThat(cache.getById(1).getVersion(), is(2));
+    }
+
+    @Test
+    public void whenUpdateExpectingException() {
+        Cache cache = new Cache();
+        Base base = new Base(1, 1);
+        cache.add(base);
+        base.setVersion(2);
+        cache.update(base);
     }
 }
