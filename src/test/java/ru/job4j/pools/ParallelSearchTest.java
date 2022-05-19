@@ -30,4 +30,9 @@ public class ParallelSearchTest {
         assertThat(ParallelSearch.search(array, 1000001), is(-1));
         assertThat(ParallelSearch.search(array, -100), is(-1));
     }
+
+    @Test
+    public void whenFinalElement() {
+        assertThat(ParallelSearch.search(array, 1000000), is(-1));
+    }
 }
